@@ -40,7 +40,9 @@ export class ProductsService {
 				};
 				productInventory.push(product);
 			});
-			this.mongoService.populateDatabase(productInventory);
+			/* TODO: Tempory fix until script created for one time seeding of the database */
+			this.mongoService.wipeDatabase();
+			this.mongoService.seedDatabase(productInventory);
 		} else {
 			throw new Error("Response data is undefined");
 		}

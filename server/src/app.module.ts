@@ -4,6 +4,7 @@ import { AppService } from "./app.service";
 import { ProductsModule } from "./products.module";
 import { MongooseModule } from "@nestjs/mongoose";
 import { MongoDBModule } from "./database/mongoDB.module";
+import { ProductsGateway } from './products.gateway';
 
 @Module({
 	imports: [
@@ -14,6 +15,6 @@ import { MongoDBModule } from "./database/mongoDB.module";
 		),
 	],
 	controllers: [AppController],
-	providers: [AppService],
+	providers: [AppService, ProductsGateway],
 })
 export class AppModule {}
