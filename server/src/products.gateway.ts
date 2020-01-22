@@ -17,6 +17,9 @@ import { Socket } from "socket.io";
 import { ProductView } from "./common/productView.enum";
 import { MongoDBService } from "./database/mongoDB.service";
 
+enum ServerEvents {
+	sendProducts = "productsFromServer",
+}
 @WebSocketGateway()
 export class ProductsGateway
 	implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -53,12 +56,12 @@ export class ProductsGateway
 		@MessageBody() state: ProductView
 	): Promise<WsResponse> {
 		try {
-			this.logger.log("subscried");
+			this.logger.log("subscribed");
 			switch (state) {
 				case ProductView.initial:
-					return await this.getDbData(ProductView.initial);
+					return await this.getDbData(ServerEvents.sendProducts);
 				default:
-					return await this.getDbData(ProductView.initial);
+					return await this.getDbData(ServerEvents.sendProducts);
 			}
 		} catch (error) {
 			throw new BadGatewayException("ERROR sending data back to client");
