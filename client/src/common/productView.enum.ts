@@ -3,4 +3,5 @@ export enum ProductView {
 	priceLowToHigh = "priceLowToHigh",
 	priceHighToLow = "priceHighToLow",
 	availability = "availability",
+	alphabetical = "alphabetical",
 }

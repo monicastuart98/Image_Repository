@@ -35,14 +35,54 @@ class App extends React.Component<Props, ProductState> {
 	componentWillUnmount() {
 		this.context.disconnect();
 	}
-
+	handleFilter(filter: ProductView) {
+		switch (filter) {
+			case ProductView.priceLowToHigh:
+				const productsLow = this.state.products;
+				productsLow.sort((a, b): number => {
+					return Number(a.price) - Number(b.price);
+				});
+				this.setState({ products: productsLow });
+				break;
+			case ProductView.priceHighToLow:
+				const productsHigh = this.state.products;
+				productsHigh.sort((a, b): number => {
+					return Number(b.price) - Number(a.price);
+				});
+				this.setState({ products: productsHigh });
+				break;
+			case ProductView.availability:
+				const productAvail = this.state.products;
+				productAvail.sort((a, b): number => {
+					return b.inventory_quantity - a.inventory_quantity;
+				});
+				this.setState({ products: productAvail });
+				break;
+			case ProductView.alphabetical:
+				const productAlpha = this.state.products;
+				productAlpha.sort((a, b) => {
+					if (a.product_type < b.product_type) {
+						return -1;
+					}
+					if (a.product_type > b.product_type) {
+						return 1;
+					}
+					return 0;
+				});
+				this.setState({ products: productAlpha });
+				break;
+			default:
+				this.setState({ products: this.state.products });
+				break;
+		}
+	}
 	render() {
 		const displayProducts = this.state.products.map((item, index) => {
 			const { image_id, width, height, src } = item.imagePayload;
 			const { id, title, product_type, price, inventory_quantity } = item;
 			const img_id = image_id.toString();
 			return (
-				<div className="Product">
+				<div className={`Product ${id}`}>
 					<img
 						className={img_id}
 						height={height}
@@ -51,7 +91,7 @@ class App extends React.Component<Props, ProductState> {
 						src={src}
 					></img>
 
-					<label>{product_type}</label>
+					<label>{title}</label>
 					<span>${price}</span>
 					<span>Inventory: {inventory_quantity}</span>
 				</div>
@@ -64,9 +104,18 @@ class App extends React.Component<Props, ProductState> {
 
 				<div className="Filters">
 					APPLY FILTERS:
-					<button>Price: Low to High</button>
-					<button>Price: High to Low</button>
-					<button>Availability</button>
+					<button onClick={() => this.handleFilter(ProductView.priceLowToHigh)}>
+						Price: Low to High
+					</button>
+					<button onClick={() => this.handleFilter(ProductView.priceHighToLow)}>
+						Price: High to Low
+					</button>
+					<button onClick={() => this.handleFilter(ProductView.availability)}>
+						Availability
+					</button>
+					<button onClick={() => this.handleFilter(ProductView.alphabetical)}>
+						Alphabetical
+					</button>
 				</div>
 				<form className="Search-Bar">
 					<span>
